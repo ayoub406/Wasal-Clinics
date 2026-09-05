@@ -58,4 +58,33 @@ def create_app(config_class=Config):
     from app.cli import register_cli
     register_cli(app)
 
+    # ------------------------------------------------------------------
+    # إنشاء الجداول وتهيئة البيانات الأولية تلقائيًا عند بدء التشغيل.
+    # هذا يغني عن الحاجة لتشغيل أوامر flask يدويًا عبر Shell، وهو مفيد
+    # خصوصًا على خطط الاستضافة المجانية (مثل Render Free) التي لا تتيح
+    # الوصول لـ Shell. العملية آمنة ومتكررة (idempotent): لا تكرر الجداول
+    # أو البيانات إذا كانت موجودة مسبقًا.
+    # ------------------------------------------------------------------
+    with app.app_context():
+        try:
+            from app.cli import DEFAULT_DEPARTMENTS
+            from app.models import Department
+
+            db.create_all()
+
+            username = app.config["DEFAULT_ADMIN_USERNAME"]
+            if not Admin.query.filter_by(username=username).first():
+                admin = Admin(username=username, full_name=app.config["DEFAULT_ADMIN_NAME"])
+                admin.set_password(app.config["DEFAULT_ADMIN_PASSWORD"])
+                db.session.add(admin)
+
+            for i, data in enumerate(DEFAULT_DEPARTMENTS):
+                if not Department.query.filter_by(slug=data["slug"]).first():
+                    db.session.add(Department(order=i, **data))
+
+            db.session.commit()
+        except Exception as exc:  # لا نوقف تشغيل التطبيق إذا فشلت التهيئة
+            app.logger.warning(f"database bootstrap skipped/failed: {exc}")
+            db.session.rollback()
+
     return app
