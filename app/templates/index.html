@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+{% import "partials/icons.html" as icons %}
+
+{% block content %}
+
+<section class="hero">
+  <div class="hero-glow" aria-hidden="true"></div>
+  <div class="container hero-grid">
+    <div class="hero-copy">
+      <p class="eyebrow">{{ _('hero_eyebrow') }}</p>
+      <h1>{{ _('hero_title') }}</h1>
+      <p class="hero-subtitle">{{ _('hero_subtitle') }}</p>
+      <div class="hero-actions">
+        <a href="{{ url_for('booking.book') }}" class="btn btn-primary">{{ _('hero_cta_book') }}</a>
+        <a href="#departments" class="btn btn-ghost">{{ _('hero_cta_departments') }}</a>
+      </div>
+
+      <div class="hero-stats">
+        <div class="stat">
+          <strong>+8</strong>
+          <span>{{ _('stat_departments') }}</span>
+        </div>
+        <div class="stat">
+          <strong>&lt; 2{{ 'h' if current_lang == 'en' else ' س' }}</strong>
+          <span>{{ _('stat_response') }}</span>
+        </div>
+        <div class="stat">
+          <strong>24/7</strong>
+          <span>{{ _('stat_access') }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-visual" aria-hidden="true">
+      <div class="hero-card card-float-1">
+        <div class="hero-card-row">
+          <span class="dot dot-cyan"></span>
+          <span>{{ _('table_status') }}: {{ _('filter_approved') }}</span>
+        </div>
+        <div class="hero-card-time">09:30 &middot; {{ _('period_morning') }}</div>
+      </div>
+      <div class="hero-card card-float-2">
+        <div class="hero-card-row">
+          <span class="dot dot-soft"></span>
+          <span>{{ _('nav_departments') }}</span>
+        </div>
+        <div class="hero-card-time">{{ _('site_name') }}</div>
+      </div>
+      <div class="hero-orb"></div>
+    </div>
+  </div>
+  <svg class="hero-wave" viewBox="0 0 1440 90" preserveAspectRatio="none" aria-hidden="true">
+    <path d="M0,64 C240,10 480,10 720,40 C960,70 1200,70 1440,30 L1440,90 L0,90 Z"></path>
+  </svg>
+</section>
+
+<section class="section how-it-works">
+  <div class="container">
+    <h2 class="section-title">{{ _('how_title') }}</h2>
+    <div class="steps-grid">
+      <article class="step-card">
+        <div class="step-index">1</div>
+        <h3>{{ _('how_step1_title') }}</h3>
+        <p>{{ _('how_step1_text') }}</p>
+      </article>
+      <article class="step-card">
+        <div class="step-index">2</div>
+        <h3>{{ _('how_step2_title') }}</h3>
+        <p>{{ _('how_step2_text') }}</p>
+      </article>
+      <article class="step-card">
+        <div class="step-index">3</div>
+        <h3>{{ _('how_step3_title') }}</h3>
+        <p>{{ _('how_step3_text') }}</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="section departments-section" id="departments">
+  <div class="container">
+    <div class="section-head">
+      <h2 class="section-title">{{ _('departments_title') }}</h2>
+      <p class="section-subtitle">{{ _('departments_subtitle') }}</p>
+    </div>
+
+    <div class="departments-grid">
+      {% for dept in departments %}
+      <article class="department-card">
+        <div class="department-icon">{{ icons.icon(dept.icon) }}</div>
+        <h3>{{ dept.name(current_lang) }}</h3>
+        <p>{{ dept.description(current_lang) }}</p>
+        <a href="{{ url_for('booking.book', slug=dept.slug) }}" class="department-link">
+          {{ _('book_now') }}
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" class="rtl-flip"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+      </article>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="cta-banner">
+  <div class="container cta-banner-inner">
+    <h2>{{ _('cta_banner_title') }}</h2>
+    <a href="{{ url_for('booking.book') }}" class="btn btn-primary btn-large">{{ _('cta_banner_button') }}</a>
+  </div>
+</section>
+
+{% endblock %}

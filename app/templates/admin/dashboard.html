@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="page-header admin-header">
+  <div class="container admin-header-row">
+    <div>
+      <p class="eyebrow">{{ _('nav_admin') }}</p>
+      <h1>{{ _('admin_dashboard_title') }}</h1>
+    </div>
+    <a href="{{ url_for('auth.logout') }}" class="btn btn-ghost btn-small">{{ _('nav_logout') }}</a>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="admin-tools-row">
+      <div class="filter-pills">
+        <a class="filter-pill {{ 'active' if status_filter == 'all' else '' }}" href="{{ url_for('admin.dashboard', status='all') }}">{{ _('filter_all') }} ({{ counts.all }})</a>
+        <a class="filter-pill {{ 'active' if status_filter == 'pending' else '' }}" href="{{ url_for('admin.dashboard', status='pending') }}">{{ _('filter_pending') }} ({{ counts.pending }})</a>
+        <a class="filter-pill {{ 'active' if status_filter == 'approved' else '' }}" href="{{ url_for('admin.dashboard', status='approved') }}">{{ _('filter_approved') }} ({{ counts.approved }})</a>
+        <a class="filter-pill {{ 'active' if status_filter == 'rejected' else '' }}" href="{{ url_for('admin.dashboard', status='rejected') }}">{{ _('filter_rejected') }} ({{ counts.rejected }})</a>
+      </div>
+      <div class="admin-links">
+        <a href="{{ url_for('admin.departments') }}">{{ _('nav_departments') }}</a>
+        <a href="{{ url_for('admin.doctors') }}">{{ _('table_doctor') }}</a>
+      </div>
+    </div>
+
+    {% if appointments %}
+    <div class="admin-list">
+      {% for appt in appointments %}
+      <article class="admin-card status-border-{{ appt.status }}">
+        <div class="admin-card-main">
+          <div class="admin-card-info">
+            <h3>{{ appt.patient.full_name }} <span class="muted" dir="ltr">&middot; {{ appt.patient.phone }}</span></h3>
+            <p class="admin-card-meta">
+              {{ appt.department.name(current_lang) }}
+              {% if appt.doctor %} &middot; {{ appt.doctor.name(current_lang) }}{% endif %}
+              &middot; {{ appt.preferred_date.strftime('%Y-%m-%d') }}
+              &middot; {{ _('period_morning') if appt.preferred_period == 'morning' else _('period_evening') }}
+            </p>
+            {% if appt.notes %}<p class="admin-card-notes">“{{ appt.notes }}”</p>{% endif %}
+          </div>
+          <span class="status-badge status-{{ appt.status }}">{{ appt.status_label(current_lang) }}</span>
+        </div>
+
+        {% if appt.status == 'pending' %}
+        <div class="admin-card-actions">
+          <form method="POST" action="{{ url_for('admin.approve', appointment_id=appt.id) }}" class="inline-form">
+            <input type="hidden" name="return_filter" value="{{ status_filter }}">
+            <label class="mini-label">{{ _('confirm_datetime') }}</label>
+            <input type="datetime-local" name="confirmed_datetime" required>
+            <label class="mini-label">{{ _('admin_note_label') }}</label>
+            <input type="text" name="admin_note" class="note-input">
+            <button type="submit" class="btn btn-primary btn-small">{{ _('approve') }}</button>
+          </form>
+
+          <form method="POST" action="{{ url_for('admin.reject', appointment_id=appt.id) }}" class="inline-form inline-form-reject">
+            <input type="hidden" name="return_filter" value="{{ status_filter }}">
+            <input type="text" name="admin_note" class="note-input" placeholder="{{ _('admin_note_label') }}">
+            <button type="submit" class="btn btn-outline-danger btn-small">{{ _('reject') }}</button>
+          </form>
+        </div>
+        {% elif appt.confirmed_datetime %}
+        <div class="admin-card-footer">
+          <span>{{ _('confirm_datetime') }}: {{ appt.confirmed_datetime.strftime('%Y-%m-%d %H:%M') }}</span>
+          {% if appt.admin_note %}<span class="muted">— {{ appt.admin_note }}</span>{% endif %}
+        </div>
+        {% endif %}
+      </article>
+      {% endfor %}
+    </div>
+    {% else %}
+    <p class="empty-state">{{ _('no_requests') }}</p>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

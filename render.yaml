@@ -1,0 +1,30 @@
+services:
+  - type: web
+    name: wisal-clinics
+    env: python
+    plan: free
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "gunicorn -w 4 -k gthread --threads 4 -b 0.0.0.0:$PORT run:app"
+    envVars:
+      - key: SECRET_KEY
+        generateValue: true
+      - key: FLASK_APP
+        value: run.py
+      - key: DATABASE_URL
+        sync: false
+      - key: DATABASE_URL_DIRECT
+        sync: false
+      - key: WHATSAPP_ENABLED
+        value: "false"
+      - key: WHATSAPP_PHONE_NUMBER_ID
+        sync: false
+      - key: WHATSAPP_ACCESS_TOKEN
+        sync: false
+      - key: ADMIN_NOTIFY_PHONE
+        sync: false
+      - key: DEFAULT_ADMIN_USERNAME
+        value: admin
+      - key: DEFAULT_ADMIN_PASSWORD
+        sync: false
+      - key: DEFAULT_ADMIN_NAME
+        value: "مدير النظام"

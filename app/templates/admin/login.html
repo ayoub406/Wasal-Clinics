@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="section auth-section">
+  <div class="container narrow">
+    <form method="POST" class="card-surface auth-form">
+      <h1>{{ _('admin_login_title') }}</h1>
+      <div class="form-field">
+        <label for="username">{{ _('label_username') }}</label>
+        <input type="text" id="username" name="username" dir="ltr" required autofocus>
+      </div>
+      <div class="form-field">
+        <label for="password">{{ _('label_password') }}</label>
+        <input type="password" id="password" name="password" dir="ltr" required>
+      </div>
+      <button type="submit" class="btn btn-primary btn-block">{{ _('login_button') }}</button>
+    </form>
+  </div>
+</section>
+{% endblock %}

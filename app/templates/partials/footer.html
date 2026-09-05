@@ -1,0 +1,25 @@
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <div class="footer-brand">
+      <span class="brand-name">{{ _('site_name') }}</span>
+      <p>{{ _('tagline') }}</p>
+    </div>
+
+    <div class="footer-col">
+      <h4>{{ _('nav_departments') }}</h4>
+      <a href="{{ url_for('main.index') }}#departments">{{ _('nav_departments') }}</a>
+      <a href="{{ url_for('booking.book') }}">{{ _('nav_book') }}</a>
+      <a href="{{ url_for('booking.my_appointments') }}">{{ _('nav_my_appointments') }}</a>
+    </div>
+
+    <div class="footer-col">
+      <h4>{{ _('footer_contact') }}</h4>
+      <a href="tel:+218900000000" dir="ltr">+218 900 000 000</a>
+      <a href="mailto:care@wisal-clinics.example">care@wisal-clinics.example</a>
+      <a href="{{ url_for('auth.login') }}" class="admin-link">{{ _('nav_admin') }}</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>&copy; {{ 2024 }}–<span id="year"></span> {{ _('site_name') }} &mdash; {{ _('footer_rights') }}</span>
+  </div>
+</footer>

@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="page-header">
+  <div class="container">
+    <h1>{{ _('my_appointments_title') }}</h1>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container narrow">
+    <form method="GET" class="lookup-form card-surface">
+      <label for="phone">{{ _('search_by_phone') }}</label>
+      <div class="lookup-row">
+        <input type="tel" id="phone" name="phone" dir="ltr" value="{{ phone }}" placeholder="+218 9xx xxx xxx">
+        <button type="submit" class="btn btn-primary">{{ _('search_button') }}</button>
+      </div>
+    </form>
+
+    {% if searched %}
+      {% if appointments %}
+      <div class="table-wrap card-surface">
+        <table class="appointments-table">
+          <thead>
+            <tr>
+              <th>{{ _('table_department') }}</th>
+              <th>{{ _('table_doctor') }}</th>
+              <th>{{ _('table_date') }}</th>
+              <th>{{ _('table_confirmed') }}</th>
+              <th>{{ _('table_status') }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for appt in appointments %}
+            <tr>
+              <td>{{ appt.department.name(current_lang) }}</td>
+              <td>{{ appt.doctor.name(current_lang) if appt.doctor else '—' }}</td>
+              <td>{{ appt.preferred_date.strftime('%Y-%m-%d') }} &middot; {{ _('period_morning') if appt.preferred_period == 'morning' else _('period_evening') }}</td>
+              <td>{{ appt.confirmed_datetime.strftime('%Y-%m-%d %H:%M') if appt.confirmed_datetime else _('not_confirmed_yet') }}</td>
+              <td><span class="status-badge status-{{ appt.status }}">{{ appt.status_label(current_lang) }}</span></td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% else %}
+      <p class="empty-state">{{ _('no_appointments') }}</p>
+      {% endif %}
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

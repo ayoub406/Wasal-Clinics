@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="page-header admin-header">
+  <div class="container admin-header-row">
+    <div>
+      <p class="eyebrow">{{ _('nav_admin') }}</p>
+      <h1>{{ _('nav_departments') }}</h1>
+    </div>
+    <a href="{{ url_for('admin.dashboard') }}" class="btn btn-ghost btn-small">{{ _('admin_dashboard_title') }}</a>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="admin-list">
+      {% for dept in departments %}
+      <article class="admin-card {{ '' if dept.is_active else 'inactive' }}">
+        <div class="admin-card-main">
+          <div class="admin-card-info">
+            <h3>{{ dept.name_ar }} <span class="muted">/ {{ dept.name_en }}</span></h3>
+            <p class="admin-card-meta" dir="ltr">/{{ dept.slug }} &middot; {{ dept.icon }}</p>
+          </div>
+          <form method="POST" action="{{ url_for('admin.toggle_department', department_id=dept.id) }}">
+            <button type="submit" class="btn btn-small {{ 'btn-outline-danger' if dept.is_active else 'btn-primary' }}">
+              {{ 'إخفاء' if dept.is_active and current_lang == 'ar' else ('Hide' if dept.is_active else ('إظهار' if current_lang == 'ar' else 'Show')) }}
+            </button>
+          </form>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+
+    <h2 class="section-title-small">{{ '+ إضافة قسم جديد' if current_lang == 'ar' else '+ Add new department' }}</h2>
+    <form method="POST" class="card-surface booking-form">
+      <div class="form-grid">
+        <div class="form-field">
+          <label>{{ 'المعرف (بالإنجليزية بدون مسافات)' if current_lang == 'ar' else 'Slug' }}</label>
+          <input type="text" name="slug" dir="ltr" required>
+        </div>
+        <div class="form-field">
+          <label>{{ 'الأيقونة' if current_lang == 'ar' else 'Icon' }}</label>
+          <input type="text" name="icon" dir="ltr" placeholder="bone, tooth, pulse, leaf, baby, heart, heartbeat, eye" value="stethoscope">
+        </div>
+        <div class="form-field">
+          <label>{{ 'الاسم بالعربية' if current_lang == 'ar' else 'Name (Arabic)' }}</label>
+          <input type="text" name="name_ar" required>
+        </div>
+        <div class="form-field">
+          <label>{{ 'الاسم بالإنجليزية' if current_lang == 'ar' else 'Name (English)' }}</label>
+          <input type="text" name="name_en" dir="ltr" required>
+        </div>
+        <div class="form-field span-2">
+          <label>{{ 'الوصف بالعربية' if current_lang == 'ar' else 'Description (Arabic)' }}</label>
+          <textarea name="description_ar" rows="2"></textarea>
+        </div>
+        <div class="form-field span-2">
+          <label>{{ 'الوصف بالإنجليزية' if current_lang == 'ar' else 'Description (English)' }}</label>
+          <textarea name="description_en" dir="ltr" rows="2"></textarea>
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary">{{ _('save') }}</button>
+    </form>
+  </div>
+</section>
+{% endblock %}

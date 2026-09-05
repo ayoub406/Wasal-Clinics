@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% block title %}{{ _('nav_book') }} — {{ _('site_name') }}{% endblock %}
+
+{% block content %}
+<section class="page-header">
+  <div class="container">
+    <p class="eyebrow">{{ _('nav_book') }}</p>
+    <h1>{{ _('book_page_title') }}</h1>
+    <p class="page-subtitle">{{ _('book_page_subtitle') }}</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container narrow">
+    <form method="POST" class="booking-form card-surface" novalidate>
+      <div class="form-grid">
+        <div class="form-field">
+          <label for="full_name">{{ _('label_full_name') }}</label>
+          <input type="text" id="full_name" name="full_name" required value="{{ form.get('full_name', '') }}">
+        </div>
+
+        <div class="form-field">
+          <label for="phone">{{ _('label_phone') }}</label>
+          <input type="tel" id="phone" name="phone" dir="ltr" placeholder="+218 9xx xxx xxx" required value="{{ form.get('phone', '') }}">
+        </div>
+
+        <div class="form-field span-2">
+          <label for="email">{{ _('label_email') }}</label>
+          <input type="email" id="email" name="email" dir="ltr" value="{{ form.get('email', '') }}">
+        </div>
+
+        <div class="form-field">
+          <label for="department_id">{{ _('label_department') }}</label>
+          <select id="department_id" name="department_id" required data-doctors-url-base="{{ url_for('booking.department_doctors', slug='__SLUG__') }}">
+            <option value="" disabled {{ 'selected' if not selected_department else '' }}>—</option>
+            {% for dept in departments %}
+            <option value="{{ dept.id }}" data-slug="{{ dept.slug }}"
+              {{ 'selected' if selected_department and selected_department.id == dept.id else '' }}>
+              {{ dept.name(current_lang) }}
+            </option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div class="form-field">
+          <label for="doctor_id">{{ _('label_doctor') }}</label>
+          <select id="doctor_id" name="doctor_id">
+            <option value="">{{ _('label_doctor_any') }}</option>
+          </select>
+        </div>
+
+        <div class="form-field">
+          <label for="preferred_date">{{ _('label_date') }}</label>
+          <input type="date" id="preferred_date" name="preferred_date" required value="{{ form.get('preferred_date', '') }}">
+        </div>
+
+        <div class="form-field">
+          <label>{{ _('label_period') }}</label>
+          <div class="pill-choice">
+            <label class="pill">
+              <input type="radio" name="preferred_period" value="morning" {{ 'checked' if form.get('preferred_period', 'morning') == 'morning' else '' }}>
+              <span>{{ _('period_morning') }}</span>
+            </label>
+            <label class="pill">
+              <input type="radio" name="preferred_period" value="evening" {{ 'checked' if form.get('preferred_period') == 'evening' else '' }}>
+              <span>{{ _('period_evening') }}</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="form-field span-2">
+          <label for="notes">{{ _('label_notes') }}</label>
+          <textarea id="notes" name="notes" rows="3">{{ form.get('notes', '') }}</textarea>
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-large btn-block">{{ _('submit_booking') }}</button>
+    </form>
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="{{ url_for('static', filename='js/booking-form.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="section success-section">
+  <div class="container narrow">
+    <div class="success-card card-surface">
+      <div class="success-icon">
+        <svg width="52" height="52" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.6"/><path d="M8 12.5l2.5 2.5L16 9.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </div>
+      <h1>{{ _('booking_success_title') }}</h1>
+      <p>{{ _('booking_success_text') }}</p>
+      <div class="success-actions">
+        <a href="{{ url_for('booking.my_appointments') }}" class="btn btn-primary">{{ _('nav_my_appointments') }}</a>
+        <a href="{{ url_for('main.index') }}" class="btn btn-ghost">{{ _('back_home') }}</a>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
