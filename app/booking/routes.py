@@ -3,6 +3,7 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash,
 from app.extensions import db
 from app.models import Department, Doctor, Patient, Appointment
 from app.utils import get_lang
+from app.services.notifications import notify_admin_new_booking
 
 booking_bp = Blueprint("booking", __name__)
 
@@ -67,6 +68,9 @@ def book(slug=None):
         )
         db.session.add(appointment)
         db.session.commit()
+
+        # تنبيه فوري لرقم العيادة بمجرد ما مريض يحجز موعد جديد
+        notify_admin_new_booking(appointment, lang="ar")
 
         session["last_booking_phone"] = phone
         return redirect(url_for("booking.success"))
