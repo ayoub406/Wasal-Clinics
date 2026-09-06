@@ -3,6 +3,16 @@ from config import Config
 from app.extensions import db, migrate, login_manager
 from app.translations import translate
 from app.utils import get_lang, get_dir
+import logging
+
+# بدون هذا الإعداد، رسائل logger.info() (زي رسائل واتساب التجريبية) ما
+# تظهر إطلاقًا في سجلات Render، لأن الإعداد الافتراضي لبايثون يخفي أي
+# رسالة أقل من مستوى WARNING إذا ما فيه معالج (handler) مضبوط مسبقًا.
+if not logging.getLogger().handlers:
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s %(levelname)s [%(name)s] %(message)s",
+    )
 
 
 def create_app(config_class=Config):
