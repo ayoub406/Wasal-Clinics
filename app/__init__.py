@@ -73,10 +73,15 @@ def create_app(config_class=Config):
             db.create_all()
 
             username = app.config["DEFAULT_ADMIN_USERNAME"]
-            if not Admin.query.filter_by(username=username).first():
+            admin = Admin.query.filter_by(username=username).first()
+            if not admin:
                 admin = Admin(username=username, full_name=app.config["DEFAULT_ADMIN_NAME"])
-                admin.set_password(app.config["DEFAULT_ADMIN_PASSWORD"])
                 db.session.add(admin)
+            # نزامن كلمة المرور مع متغير البيئة في كل مرة يشتغل الموقع،
+            # هذا يضمن إن كلمة المرور الفعلية تطابق دائمًا المتغير المضبوط
+            # في Render حتى لو تغيّر بعد إنشاء الحساب أول مرة.
+            admin.set_password(app.config["DEFAULT_ADMIN_PASSWORD"])
+            admin.full_name = app.config["DEFAULT_ADMIN_NAME"]
 
             for i, data in enumerate(DEFAULT_DEPARTMENTS):
                 if not Department.query.filter_by(slug=data["slug"]).first():
